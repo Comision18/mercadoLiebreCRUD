@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+  <%- include('partials/head',{
+    title : 'Registrate'
+  }) %>
+  <body>
+    <%- include('partials/headerNavbar') %>
+
+    <div class="container products-wrapper">
+      <div class="row">
+        <div class="col-12">
+          <h2 class="products-title">Registrate</h2>
+        </div>
+          <div class="col-12">
+                <form id="form-register" action="" method="POST" novalidate>
+
+                  <div class="row product-detail">
+
+                      <div class="col-12 col-md-6">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text"
+                        class="form-input form-control <%= locals.errors && errors.name ? 'is-invalid' : null %> " 
+                        value="<%= locals.old && old.name ? old.name : null %>"
+                        id="name"  name="name" title="El nombre debe tener más de dos caracteres"/>
+                        <small id="errorNombre" class="text-danger"><%= locals.errors && errors.name ? errors.name.msg : null %> </small>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="surname" class="form-label">Apellido</label>
+                        <input type="text"
+                        value="<%= locals.old && old.surname ? old.surname : null %>"
+                        class="form-input form-control <%= locals.errors && errors.surname ? 'is-invalid' : null %>"
+                        id="surname" name="surname" title="El apellido debe tener más de dos caracteres"/>
+                        <small id="errorApellido" class="text-danger"><%= locals.errors && errors.surname ? errors.surname.msg : null %></small>
+                      </div>
+                      <div class="col-12">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email"
+                        value="<%= locals.old && old.email ? old.email : null %>"
+                        class="form-input form-control <%= locals.errors && errors.email ? 'is-invalid' : null %>"
+                        id="email" name="email"/>
+                        <small id="errorEmail" class="text-danger"><%= locals.errors && errors.email ? errors.email.msg : null %></small>
+                      </div>
+                    <div class="col-12 col-md-6">
+                        <label for="pass" class="form-label">Contraseña</label>
+                        <input type="password"
+                        class="form-input form-control <%= locals.errors && errors.pass ? 'is-invalid' : null %>" name="pass" id="pass"/>
+                        <small id="errorPass" class="text-danger"><%= locals.errors && errors.pass ? errors.pass.msg : null %></small>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label for="pass2" class="form-label">Reingresar contraseña</label>
+                        <input type="password"
+                        class="form-input form-control <%= locals.errors && errors.pass2 ? 'is-invalid' : null %>"
+                        id="pass2" name="pass2"/>
+                        <small id="errorPass2" class= "text-danger"><%= locals.errors && errors.pass2 ? errors.pass2.msg : null %></small>
+
+                      </div>
+                      <div class="col-12 col-md-6 d-flex justify-content-center">
+                     
+                        <div class="form-check d-flex align-items-center">
+                          <input name="bases" class="form-check-input <%= locals.errors && errors.bases ? 'is-invalid' : null %>" type="checkbox" value="" id="terms" style="width:30px; height:30px;">
+                          <label class="form-check-label ms-2" for="terms">
+                            Acepto las bases y condiciones
+                          </label>
+                        </div>
+
+                      
+
+                        </div>
+                       
+                        <div class="col-12 col-md-6 mt-4">
+
+                          <button type="submit" class="buy-now-button">
+                            Registrarse
+                          </button>
+                          <p id="errorTerms" class= "text-danger mt-4"><%= locals.errors && errors.bases ? errors.bases.msg : null %></p>
+                          <p id="msgError" class="text-danger"></p>
+
+                         
+                        </div>
+
+                    </div>
+                    
+                      </div>
+                      
+
+                      </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
