@@ -1,3 +1,6 @@
+const db = require('../database/models')
+
+
 const fs = require('fs');
 const path = require('path');
 
@@ -10,94 +13,111 @@ const controller = {
 	// Root - Show all products
 	index: (req, res) => {
 		// Do the magic
-		const productsFilePath = path.join(__dirname, '../data/productsDataBase.json');
-const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
-		return res.render('products',{
-			products,
-			toThousand
-		})
+
+		db.Product.findAll()
+			.then(products => {
+				return res.render('products',{
+					products,
+					toThousand
+				})
+			})
+			.catch(error => console.log(error))
+	
 	},
 
 	// Detail - Detail from one product
 	detail: (req, res) => {
 		// Do the magic
-
-		
-const productsFilePath = path.join(__dirname, '../data/productsDataBase.json');
-const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
 		const {id} = req.params;
-		const product = products.find(product => product.id === +id);
-		return res.render('detail',{
-			...product,
-			toThousand
-		})
+
+		db.Product.findByPk(id)
+			.then(product => {
+				return res.render('detail',{
+					...product.dataValues,
+					toThousand
+				})
+			})
+			.catch(error => console.log(error))
 	},
 
 	// Create - Form to create
 	create: (req, res) => {
 		// Do the magic
-		return res.render('product-create-form')
+		db.Category.findAll()
+			.then(categories => {
+				return res.render('product-create-form',{
+					categories
+				})
+			})
+			.catch(error => console.log(error))
+
 	},
 	
 	// Create -  Method to store
 	store: (req, res) => {
 		// Do the magic
 		const {name, discount, price, description,category} = req.body;
-		const newProduct = {
-			id : products[products.length - 1].id + 1,
+
+		db.Product.create({
 			name : name.trim(),
+			discount,
+			price,
 			description : description.trim(),
-			price : +price,
-			discount : +discount,
-			image : null,
-			category
-		}
+			categoryId : category,
+			image : "default-image.png",
+			visible : true
+		})
+			.then(product => {
+				console.log(product);
+				return res.redirect('/products')
+			})
+			.catch(error => console.log(error))
 
-		products.push(newProduct);
-		fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 3),'utf-8');
-
-		return res.redirect('/products')
 	},
 
 	// Update - Form to edit
 	edit: (req, res) => {
 		// Do the magic
 		const {id} = req.params;
-		const product = products.find(product => product.id === +id);
-		return res.render('product-edit-form',{
-			...product
-		}
-		)
+
+		const product = db.Product.findByPk(id)
+		const categories = db.Category.findAll()
+
+		Promise.all([product,categories])
+			.then(([product,categories]) => {
+				return res.render('product-edit-form',{
+					...product.dataValues,
+					categories
+				})
+			})
+			.catch(error => console.log(error))
+	
 	},
 	// Update - Method to update
 	update: (req, res) => {
 		// Do the magic
 		const {id} = req.params;
-		const product = products.find(product => product.id === +id);
 		const {name, discount, price, description,category} = req.body;
 
-		const productModified = {
-			id : +id,
-			name : name.trim(),
-			description : description.trim(),
-			price : +price,
-			discount : +discount,
-			image : product.image,
-			category
-		}
-
-		const productsModified = products.map(product => {
-			if(product.id === +id){
-				return productModified
+		db.Product.update(
+			{
+				name : name.trim(),
+				discount,
+				price,
+				description : description.trim(),
+				categoryId : category,
+			},
+			{
+				where : {
+					id
+				}
 			}
+		)
+			.then(() => {
+				return res.redirect('/products/detail/' + id)
 
-			return product
-		})
-
-		fs.writeFileSync(productsFilePath, JSON.stringify(productsModified, null, 3),'utf-8');
-
-		return res.redirect('/products/detail/' + id)
-
+			})
+			.catch(error => console.log(error))
 	},
 
 	// Delete - Delete one product from DB
@@ -105,9 +125,19 @@ const products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
 		// Do the magic
 
 		const {id} = req.params;
-		const productsModified = products.filter(product => product.id !== + id)
-		fs.writeFileSync(productsFilePath, JSON.stringify(productsModified, null, 3),'utf-8');
-		return res.redirect('/products')
+
+		db.Product.destroy({
+			where : {
+				id
+			}
+		})
+			.then(() => {
+				return res.redirect('/products')
+
+			})
+			.catch(error => console.log(error))
+
+		
 
 	}
 };

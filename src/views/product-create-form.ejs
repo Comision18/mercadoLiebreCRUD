@@ -31,9 +31,10 @@
 					<div class="col-12 col-md-6">
 						<label for="category" class="form-label">Categoría:</label>
 						<select name="category" id="category" class="form-input">
-							<option value="">Elegí</option>
-							<option value="in-sale">En oferta</option>
-							<option value="visited">Últimos agregados</option>
+							<option value="" selected hidden>Elegí</option>
+							<% categories.forEach(({id,name}) => { %>
+								<option value="<%= id %>"><%= name %></option>
+							<% }) %>
 						</select>
 					</div>
 					<div class="col-12">
