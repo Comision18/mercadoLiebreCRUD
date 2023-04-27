@@ -30,7 +30,12 @@ const productsRouter = require('./routes/products'); // Rutas /products
 
 app.use('/', mainRouter);
 app.use('/products', productsRouter);
-app.use('/users',require('./routes/users'))
+app.use('/users',require('./routes/users'));
+
+/* apis */
+
+app
+  .use('/api/products',require('./routes/apis/productsApiRouter'))
 
 
 // ************ DON'T TOUCH FROM HERE ************
